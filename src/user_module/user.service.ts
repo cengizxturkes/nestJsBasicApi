@@ -15,9 +15,9 @@ export class UserService {
         }
         throw new NotFoundException("User Not Found");
     }
-    addUser(user: User): User {
+    addUser(user: User): Promise<User> {
         this.users.push(user);
-        return user;
+        return Promise.resolve(user);
     } deleteUser(email: string): User[] {
         const remainingUser = this.users.filter(i => i.email !== email);
         this.users = remainingUser;
