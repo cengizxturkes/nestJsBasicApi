@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseBoolPipe, ParseIntPipe, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './interface/user';
 import { UserDto, UserParamsDto } from './dto/user.dto';
@@ -8,7 +8,11 @@ export class UserController {
     constructor(private readonly userService: UserService) { }
 
     @Get()
-    getUsers(): User[] {
+    getUsers(
+        @Param('id', ParseIntPipe) id: number,
+        @Query('sort',) sort: boolean,
+        @Body() data: UserDto
+    ): User[] {
         return this.userService.getUsers();
     }
 
