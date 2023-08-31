@@ -1,9 +1,13 @@
-import { BadRequestException, Body, Controller, Delete, Get, Header, HttpStatus, Param, ParseBoolPipe, ParseIntPipe, Post, Query, Redirect, Req, Res, UseFilters, UsePipes, ValidationPipe } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Header, HttpStatus, Param, ParseBoolPipe, ParseIntPipe, Post, Query, Redirect, Req, Res, UseFilters, UseGuards, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './interface/user';
 import { UserDto, UserParamsDto } from './dto/user.dto';
 import { Request, Response } from 'express';
 import { HttpExceptionFilter } from './filter';
+import { ZodValidationPipe } from './pipe';
+import { AuthGuard } from './guard';
+import { LoggingInterceptor } from './interceptor';
+@UseInterceptors(LoggingInterceptor)
 @Controller("users")
 export class UserController {
     constructor(private readonly userService: UserService) { }
@@ -20,6 +24,8 @@ export class UserController {
     }
 
     @Get("/:email")
+    @UseInterceptors(new LoggingInterceptor())
+    @UseGuards(new AuthGuard())
     async getUser(@Param() param: UserParamsDto): Promise<User> {
         try {
             return this.userService.getUser(param.email);
