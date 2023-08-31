@@ -1,8 +1,9 @@
-import { Body, Controller, Delete, Get, Header, HttpStatus, Param, ParseBoolPipe, ParseIntPipe, Post, Query, Redirect, Req, Res, UsePipes, ValidationPipe } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Header, HttpStatus, Param, ParseBoolPipe, ParseIntPipe, Post, Query, Redirect, Req, Res, UseFilters, UsePipes, ValidationPipe } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './interface/user';
 import { UserDto, UserParamsDto } from './dto/user.dto';
 import { Request, Response } from 'express';
+import { HttpExceptionFilter } from './filter';
 @Controller("users")
 export class UserController {
     constructor(private readonly userService: UserService) { }
@@ -19,11 +20,14 @@ export class UserController {
     }
 
     @Get("/:email")
-    @Redirect("")
-    @Header("Cache-Control", "none")
-    getUser(@Param() param: UserParamsDto, @Req() req: Request, @Res() res: Response) {
-        const data = this.userService.getUser(param.email);
-        res.status(HttpStatus.CREATED).send();
+    async getUser(@Param() param: UserParamsDto): Promise<User> {
+        try {
+            return this.userService.getUser(param.email);
+        }
+        catch (err) {
+            throw new BadRequestException("Test");
+        }
+
     }
     @Post()
     @UsePipes(new ValidationPipe())
