@@ -9,7 +9,7 @@ export class TaskStoreService {
         return task;
     }
     public async getTask(id: string): Promise<Task> {
-        const task = this.tasks.filter(i => i.id == id);
+        const task = this.tasks.filter(i => i.id === id);
 
         return task[0];
     } public async getAllTask(): Promise<Task[]> {

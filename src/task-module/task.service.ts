@@ -6,6 +6,10 @@ import { TaskStoreService } from "./task-store-service";
 export class TaskService {
     constructor(private readonly taskstoreService: TaskStoreService) { }
     public async addTask(task: Task): Promise<Task> {
+        task.completed = false;
+        task.description = "Dummy";
+        task.owner = "cengiz";
+        task.duration = 2;
         this.taskstoreService.addTask(task);
         return task;
     }
